@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>NextStep | Stop Losing Deals to Bad Follow-ups</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #06090e;
+      --surface-color: rgba(255, 255, 255, 0.03);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --accent: #00e6b4;
+      --accent-glow: rgba(0, 230, 180, 0.2);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Background blobs */
+    .bg-blob-1,
+    .bg-blob-2 {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: -1;
+      opacity: 0.5;
+    }
+
+    .bg-blob-1 {
+      top: -100px;
+      left: -100px;
+      width: 500px;
+      height: 500px;
+      background: rgba(0, 230, 180, 0.15);
+    }
+
+    .bg-blob-2 {
+      top: 400px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: rgba(59, 130, 246, 0.15);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 32px 0;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      background: linear-gradient(to right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo span {
+      background: linear-gradient(to right, var(--accent), #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 28px;
+      font-weight: 600;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-size: 16px;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 230, 180, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--surface-color);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(0, 230, 180, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(0, 230, 180, 0.2);
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 64px);
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    /* Glassmorphism Cards */
+    .glass-card {
+      background: var(--surface-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 40px;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Section: The Problem */
+    .section {
+      padding: 100px 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .section-header h2 {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 18px;
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .problem-card h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      color: #ff6b6b;
+    }
+
+    /* Interactive Demo Section */
+    .demo-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .demo-window {
+      background: #0f141f;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .demo-header {
+      background: rgba(255, 255, 255, 0.02);
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot.red {
+      background: #ff5f56;
+    }
+
+    .dot.yellow {
+      background: #ffbd2e;
+    }
+
+    .dot.green {
+      background: #27c93f;
+    }
+
+    .demo-body {
+      padding: 32px;
+    }
+
+    .input-group {
+      margin-bottom: 24px;
+    }
+
+    .form-control {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 16px;
+      resize: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .result-box {
+      background: rgba(0, 230, 180, 0.05);
+      border: 1px solid rgba(0, 230, 180, 0.2);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+      display: none;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .result-item {
+      margin-bottom: 16px;
+    }
+
+    .result-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .result-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .result-value {
+      font-weight: 500;
+      font-size: 16px;
+    }
+
+    .follow-up-draft {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 16px;
+      border-radius: 8px;
+      font-style: italic;
+      color: #cbd5e1;
+      margin-top: 8px;
+      position: relative;
+    }
+
+    .follow-up-draft::after {
+      content: '|';
+      position: absolute;
+      right: -2px;
+      background-color: transparent;
+      animation: blink 1s step-end infinite;
+      display: inline-block;
+      opacity: 0;
+    }
+
+    .follow-up-draft.typing::after {
+      opacity: 1;
+      position: relative;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    /* Features */
+    .features-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .feature-item {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(0, 230, 180, 0.1);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Screenshots */
+    .screenshots-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .screenshot-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .screenshot-content {
+      padding: 32px;
+    }
+
+    .screenshot-card img {
+      width: 100%;
+      display: block;
+      border-top: 1px solid var(--border-color);
+      transition: transform 0.5s ease;
+    }
+
+    .screenshot-card:hover img {
+      transform: scale(1.02);
+    }
+
+    .footer {
+      border-top: 1px solid var(--border-color);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-blob-1"></div>
+  <div class="bg-blob-2"></div>
+
+  <div class="container">
+    <nav>
+      <div class="logo">NextStep<span>.ai</span></div>
+      <a href="https://wa.me/7019192196" class="btn btn-secondary">Get Early Access</a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero reveal">
+      <div class="badge">Founder beta v1.0</div>
+      <h1>We talk to so many leads…<br>and still lose some.</h1>
+      <p>Stop letting deals slip through the cracks. NextStep automatically summarizes sales calls, identifies
+        objections, and drafts the perfect follow-up email.</p>
+      <div class="hero-ctas">
+        <a href="https://wa.me/7019192196" class="btn btn-primary">Try it on WhatsApp</a>
+        <a href="#demo" class="btn btn-secondary">See how it works</a>
+      </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section class="section reveal">
+      <div class="section-header">
+        <h2>The Leak in Your Pipeline</h2>
+        <p>You talk to 15+ leads a week. Here is what usually happens:</p>
+      </div>
+      <div class="problem-grid">
+        <div class="glass-card problem-card">
+          <h3>The Context Fades</h3>
+          <p>By Friday, you can't remember exactly what the person on Tuesday's call cared about most.</p>
+        </div>
+        <div class="glass-card problem-card">
+          <h3>Delayed Follow-ups</h3>
+          <p>Writing personalized follow-ups takes time, so you push it to tomorrow. Tomorrow never comes.</p>
+        </div>
+        <div class="glass-card problem-card">
+          <h3>Lost Momentum</h3>
+          <p>Generic check-ins get ignored. Slowly, highly qualified leads just disappear.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE DEMO -->
+    <section id="demo" class="section reveal">
+      <div class="section-header">
+        <h2>Experience NextStep</h2>
+        <p>Drop a rough summary of a call. We do the rest.</p>
+      </div>
+
+      <div class="demo-container">
+        <div class="demo-window">
+          <div class="demo-header">
+            <div class="dot red"></div>
+            <div class="dot yellow"></div>
+            <div class="dot green"></div>
+          </div>
+          <div class="demo-body">
+            <div class="input-group">
+              <label class="result-label" style="display:block; margin-bottom:8px;">Paste rough notes or
+                transcript</label>
+              <textarea id="demo-input" class="form-control" rows="3"
+                placeholder="e.g. Talked to Sarah. They love the product but her manager thinks pricing is too high right now. Will sync next week."></textarea>
+            </div>
+            <button id="demo-btn" class="btn btn-primary" style="width: 100%;">Analyze Conversation</button>
+
+            <div id="demo-result" class="result-box">
+              <div class="result-item">
+                <div class="result-label">Deal Stage</div>
+                <div class="result-value" style="color: #ffbd2e;">Evaluation - Price Objection</div>
+              </div>
+              <div class="result-item">
+                <div class="result-label">Key Concern</div>
+                <div class="result-value">Manager pushback on pricing / ROI.</div>
+              </div>
+              <div class="result-item">
+                <div class="result-label">Recommended Next Step</div>
+                <div class="result-value">Send a strong ROI/Case Study to share with the manager. Follow up next week.
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-label">Generated Follow-up Draft</div>
+                <div class="follow-up-draft typing" id="demo-typing">
+                  <!-- Typing effect here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS & SCREENSHOTS -->
+    <section class="section reveal">
+      <div class="section-header">
+        <h2>Your AI Sales Assistant</h2>
+        <p>Everything you need to close more deals, with zero admin work.</p>
+      </div>
+
+      <div class="screenshots-grid">
+        <div class="glass-card screenshot-card">
+          <div class="screenshot-content">
+            <h3>Instantly understand the deal</h3>
+            <p style="color: var(--text-muted); margin-top: 8px;">See how interested the lead is, what’s blocking them,
+              and exactly what you should do next to move the deal forward.</p>
+            <div class="features-list">
+              <div class="feature-item">
+                <div class="feature-icon">✨</div>
+                <h4>Auto-Summaries</h4>
+                <p style="font-size: 14px; color: var(--text-muted);">Turns messy transcripts into clean insights.</p>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">🎯</div>
+                <h4>Objection Handling</h4>
+                <p style="font-size: 14px; color: var(--text-muted);">Identifies hidden concerns automatically.</p>
+              </div>
+            </div>
+          </div>
+          <img src="analysis.png" alt="Analysis Dashboard" onerror="this.style.display='none'">
+        </div>
+
+        <div class="glass-card screenshot-card">
+          <div class="screenshot-content">
+            <h3>Send the perfect follow-up</h3>
+            <p style="color: var(--text-muted); margin-top: 8px;">No more guessing or staring at a blank screen.
+              NextStep drafts a personalized follow-up that directly addresses their needs.</p>
+          </div>
+          <img src="followup.png" alt="Email Follow-up Draft" onerror="this.style.display='none'">
+        </div>
+
+        <div class="glass-card screenshot-card">
+          <div class="screenshot-content">
+            <h3>Perfect memory</h3>
+            <p style="color: var(--text-muted); margin-top: 8px;">Every conversation is indexed and searchable. Never
+              forget what was discussed, what they cared about, or what you promised.</p>
+          </div>
+          <img src="history.png" alt="Conversation History" onerror="this.style.display='none'">
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="hero reveal" style="padding: 120px 0;">
+      <h2>Ready to stop losing deals?</h2>
+      <p>Join founders and sales teams who are closing more deals with perfect follow-ups.</p>
+      <a href="https://wa.me/7019192196" class="btn btn-primary" style="margin-top: 20px;">Start Using NextStep</a>
+    </section>
+
+    <footer class="footer">
+      <p>© 2026 NextStep AI. Built for founders, by founders.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Scroll reveal animation
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    reveals.forEach(reveal => {
+      observer.observe(reveal);
+    });
+
+    // Interactive Demo Logic
+    const demoBtn = document.getElementById('demo-btn');
+    const demoResult = document.getElementById('demo-result');
+    const demoTyping = document.getElementById('demo-typing');
+    const demoInput = document.getElementById('demo-input');
+
+    const sampleDraft = '"Hi Sarah, Great speaking today! I completely understand your manager\'s concern around pricing right now. I\'ve attached a brief ROI case study showing how teams like yours save over 10 hours a week, which usually helps justify the cost to leadership. Let\'s sync next week as planned!"';
+
+    demoBtn.addEventListener('click', () => {
+      const btnText = demoBtn.innerText;
+      if (!demoInput.value.trim()) {
+        demoInput.value = "Talked to Sarah. They love the product but her manager thinks pricing is too high right now. Will sync next week.";
+      }
+
+      demoBtn.innerHTML = '<span style="opacity:0.7">Analyzing...</span>';
+      demoBtn.disabled = true;
+      demoResult.style.display = 'none';
+      demoTyping.innerHTML = '';
+      demoTyping.classList.add('typing');
+
+      setTimeout(() => {
+        demoBtn.innerText = 'Analyze Conversation';
+        demoBtn.disabled = false;
+        demoResult.style.display = 'block';
+
+        // Typewriter effect
+        let i = 0;
+        demoTyping.innerHTML = '';
+        function typeWriter() {
+          if (i < sampleDraft.length) {
+            demoTyping.innerHTML += sampleDraft.charAt(i);
+            i++;
+            setTimeout(typeWriter, 15);
+          } else {
+            demoTyping.classList.remove('typing');
+          }
+        }
+        setTimeout(typeWriter, 400);
+
+      }, 1200);
+    });
+  </script>
+</body>
+
+</html>
