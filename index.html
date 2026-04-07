@@ -13,8 +13,8 @@
       --bg-color: #06090e;
       --surface-color: rgba(255, 255, 255, 0.03);
       --border-color: rgba(255, 255, 255, 0.08);
-      --accent: #00e6b4;
-      --accent-glow: rgba(0, 230, 180, 0.2);
+      --accent: #50eede;
+      --accent-glow: rgba(80, 238, 222, 0.2);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
     }
@@ -164,6 +164,11 @@
     }
 
     /* Glassmorphism Cards */
+    @keyframes antiGravity {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+
     .glass-card {
       background: var(--surface-color);
       backdrop-filter: blur(12px);
@@ -171,12 +176,20 @@
       border: 1px solid var(--border-color);
       border-radius: 24px;
       padding: 40px;
-      transition: transform 0.3s ease, border-color 0.3s ease;
+      transition: all 0.4s ease;
+      animation: antiGravity 6s ease-in-out infinite;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .glass-card:nth-child(even) {
+      animation-delay: -3s; /* Stagger the floating */
     }
 
     .glass-card:hover {
-      transform: translateY(-5px);
-      border-color: rgba(255, 255, 255, 0.15);
+      animation-play-state: paused;
+      transform: translateY(-8px) scale(1.02);
+      border-color: var(--accent);
+      box-shadow: 0 15px 40px var(--accent-glow);
     }
 
     /* Section: The Problem */
@@ -438,6 +451,7 @@
 </head>
 
 <body>
+  <canvas id="particle-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; pointer-events: none;"></canvas>
 
   <div class="bg-blob-1"></div>
   <div class="bg-blob-2"></div>
@@ -445,7 +459,7 @@
   <div class="container">
     <nav>
       <div class="logo">NextStep<span>.ai</span></div>
-      <a href="https://geometric-noncomprehensively-mira.ngrok-free.dev/" class="btn btn-secondary">Get Early Access</a>
+      <a href="https://nextstep-ej4j.onrender.com/" class="btn btn-secondary">Get Early Access</a>
     </nav>
 
     <!-- HERO -->
@@ -455,7 +469,7 @@
       <p>Stop letting deals slip through the cracks. NextStep automatically summarizes sales calls, identifies
         objections, and drafts the perfect follow-up email.</p>
       <div class="hero-ctas">
-        <a href="https://geometric-noncomprehensively-mira.ngrok-free.dev/" class="btn btn-primary">Get Early Access</a>
+        <a href="https://nextstep-ej4j.onrender.com/" class="btn btn-primary">Get Early Access</a>
         <a href="#demo" class="btn btn-secondary">See how it works</a>
       </div>
     </section>
@@ -584,7 +598,7 @@
     <section class="hero reveal" style="padding: 120px 0;">
       <h2>Ready to stop losing deals?</h2>
       <p>Join founders and sales teams who are closing more deals with perfect follow-ups.</p>
-      <a href="https://geometric-noncomprehensively-mira.ngrok-free.dev/" class="btn btn-primary" style="margin-top: 20px;">Start Using NextStep</a>
+      <a href="https://nextstep-ej4j.onrender.com/" class="btn btn-primary" style="margin-top: 20px;">Start Using NextStep</a>
     </section>
 
     <footer class="footer">
@@ -648,6 +662,62 @@
 
       }, 1200);
     });
+
+    // Anti-Gravity Particles
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height + canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedY = Math.random() * -0.5 - 0.2; // Rising upward
+        this.speedX = Math.random() * 0.4 - 0.2;
+        this.opacity = Math.random() * 0.4 + 0.1;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        if (this.y < -10) {
+          this.y = canvas.height + 10;
+          this.x = Math.random() * canvas.width;
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(80, 238, 222, ${this.opacity})`;
+        ctx.fill();
+      }
+    }
+    
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < 70; i++) {
+        particles.push(new Particle());
+      }
+    }
+    
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    
+    initParticles();
+    animateParticles();
   </script>
 </body>
 
