@@ -1,940 +1,1049 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
+  <title>NextStep | Stop Losing Deals</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NextStep AI - Stop Losing Deals</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
     :root {
-      --bg: #0a0a0f;
-      --surface: #13131a;
-      --surface-light: #1a1a25;
-      --primary: #50eede;
-      --primary-dark: #30b0b0;
-      --secondary: #c6bfff;
-      --text: #ffffff;
-      --text-muted: #8b8b9a;
+      --bg-color: #000000;
+      --surface-color: rgba(255, 255, 255, 0.02);
+      --border-color: rgba(255, 255, 255, 0.06);
+      --border-hover: rgba(255, 255, 255, 0.12);
+      --text-main: #FFFFFF;
+      --text-muted: #8A8F98;
     }
-    
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
       overflow-x: hidden;
+      cursor: default;
     }
-    
-    /* Animated Background */
-    .bg-animation {
+
+    /* Custom Cursor */
+    .cursor {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      overflow: hidden;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, border-color 0.3s ease;
+      transform: translate(-50%, -50%);
     }
-    
-    .floating-card {
-      position: absolute;
-      background: linear-gradient(135deg, rgba(80, 238, 222, 0.1), rgba(80, 238, 222, 0.02));
-      border: 1px solid rgba(80, 238, 222, 0.2);
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      animation: float 20s ease-in-out infinite;
-    }
-    
-    .floating-card:nth-child(1) { width: 200px; height: 120px; top: 10%; left: 5%; animation-delay: 0s; }
-    .floating-card:nth-child(2) { width: 150px; height: 100px; top: 60%; left: 10%; animation-delay: -5s; }
-    .floating-card:nth-child(3) { width: 180px; height: 130px; top: 30%; right: 5%; animation-delay: -10s; }
-    .floating-card:nth-child(4) { width: 140px; height: 90px; top: 70%; right: 15%; animation-delay: -15s; }
-    .floating-card:nth-child(5) { width: 100px; height: 80px; top: 20%; left: 30%; animation-delay: -7s; }
-    .floating-card:nth-child(6) { width: 160px; height: 110px; top: 80%; left: 40%; animation-delay: -12s; }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      25% { transform: translateY(-30px) rotate(2deg); }
-      50% { transform: translateY(-15px) rotate(-1deg); }
-      75% { transform: translateY(-25px) rotate(1deg); }
-    }
-    
-    /* Particles */
-    .particles {
+
+    .cursor-dot {
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor.hover {
+      transform: translate(-50%, -50%) scale(1.5);
+      border-color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Fixed Grid Background */
+    .background-grid {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      background-position: center top;
+      mask-image: radial-gradient(ellipse at center top, black 0%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse at center top, black 0%, transparent 70%);
       pointer-events: none;
     }
-    
-    .particle {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background: var(--primary);
+
+    /* Floating Glow Orbs */
+    .glow-orb {
+      position: fixed;
       border-radius: 50%;
-      opacity: 0.5;
-      animation: rise 15s ease-in-out infinite;
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.3;
     }
-    
-    @keyframes rise {
-      0% { transform: translateY(100vh) scale(0); opacity: 0; }
-      10% { opacity: 0.5; }
-      90% { opacity: 0.5; }
-      100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+
+    .glow-orb-1 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(80, 238, 222, 0.4) 0%, transparent 70%);
+      top: -100px;
+      right: -100px;
+      animation: float1 20s ease-in-out infinite;
     }
-    
+
+    .glow-orb-2 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(198, 191, 255, 0.3) 0%, transparent 70%);
+      bottom: 20%;
+      left: -100px;
+      animation: float2 25s ease-in-out infinite;
+    }
+
+    @keyframes float1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(-50px, 50px) scale(1.1); }
+      66% { transform: translate(30px, -30px) scale(0.95); }
+    }
+
+    @keyframes float2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(80px, -60px) scale(1.15); }
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
     /* Navbar */
     nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      padding: 20px 60px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(10, 10, 15, 0.8);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(80, 238, 222, 0.1);
+      padding: 24px 0;
+      position: relative;
+      z-index: 100;
     }
-    
+
     .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
     }
     
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border-radius: 12px;
-      display: flex;
+    .logo span {
+      color: var(--text-muted);
+    }
+
+    .btn {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
-    }
-    
-    .logo-text {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 24px;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--primary), #80fff0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .nav-links {
-      display: flex;
-      gap: 40px;
-      align-items: center;
-    }
-    
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 14px;
+      padding: 10px 20px;
       font-weight: 500;
-      transition: color 0.3s;
-    }
-    
-    .nav-links a:hover {
-      color: var(--primary);
-    }
-    
-    .nav-cta {
-      padding: 12px 28px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border: none;
-      border-radius: 50px;
-      color: var(--bg);
-      font-weight: 600;
-      font-size: 14px;
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 0 30px rgba(80, 238, 222, 0.3);
-    }
-    
-    .nav-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 50px rgba(80, 238, 222, 0.5);
-    }
-    
-    /* Hero */
-    .hero {
+      font-size: 14px;
+      border: 1px solid transparent;
       position: relative;
-      z-index: 10;
-      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .btn:hover::before {
+      opacity: 1;
+    }
+
+    .btn-primary {
+      background: #FFFFFF;
+      color: #000000;
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 30px rgba(255,255,255,0.2);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 140px 0 100px;
+      text-align: center;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      text-align: center;
-      padding: 120px 20px 80px;
     }
-    
-    .hero-badge {
+
+    .badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 20px;
-      background: rgba(80, 238, 222, 0.1);
-      border: 1px solid rgba(80, 238, 222, 0.3);
-      border-radius: 50px;
-      font-size: 13px;
-      color: var(--primary);
-      margin-bottom: 30px;
-      animation: fadeInUp 0.8s ease-out;
-    }
-    
-    .hero-badge::before {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background: var(--primary);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    
-    .hero h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(48px, 8vw, 90px);
-      font-weight: 700;
-      line-height: 1.1;
-      margin-bottom: 30px;
-      animation: fadeInUp 0.8s ease-out 0.2s both;
-    }
-    
-    .hero h1 .highlight {
-      background: linear-gradient(135deg, var(--primary), #80fff0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .hero-subtitle {
-      font-size: clamp(18px, 2.5vw, 24px);
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.03);
       color: var(--text-muted);
-      max-width: 700px;
-      line-height: 1.6;
-      margin-bottom: 50px;
-      animation: fadeInUp 0.8s ease-out 0.4s both;
+      border: 1px solid var(--border-color);
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 32px;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .badge:hover {
+      border-color: rgba(255,255,255,0.2);
+      transform: scale(1.05);
     }
     
-    .hero-cta-group {
-      display: flex;
-      gap: 20px;
-      animation: fadeInUp 0.8s ease-out 0.6s both;
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #fff;
+      animation: pulse-dot 2s ease-in-out infinite;
     }
-    
-    .btn-primary {
-      padding: 18px 40px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border: none;
-      border-radius: 60px;
-      color: var(--bg);
-      font-weight: 700;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 0 40px rgba(80, 238, 222, 0.4);
-      text-decoration: none;
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.8); }
     }
-    
-    .btn-primary:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 0 60px rgba(80, 238, 222, 0.6);
+
+    .hero h1 {
+      font-size: clamp(42px, 7vw, 72px);
+      line-height: 1.05;
+      font-weight: 800;
+      letter-spacing: -3px;
+      margin-bottom: 24px;
+      background: linear-gradient(180deg, #FFFFFF 0%, #8A8F98 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      max-width: 900px;
     }
-    
-    .btn-secondary {
-      padding: 18px 40px;
-      background: transparent;
-      border: 2px solid rgba(80, 238, 222, 0.3);
-      border-radius: 60px;
-      color: var(--text);
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .btn-secondary:hover {
-      border-color: var(--primary);
-      background: rgba(80, 238, 222, 0.1);
-    }
-    
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Problem Section */
-    .section {
-      position: relative;
-      z-index: 10;
-      padding: 100px 60px;
-    }
-    
-    .section-label {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--primary);
-      margin-bottom: 20px;
-    }
-    
-    .section-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(36px, 5vw, 56px);
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-    
-    .section-subtitle {
-      font-size: 18px;
+
+    .hero p {
+      font-size: clamp(16px, 2vw, 20px);
       color: var(--text-muted);
       max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
     }
-    
-    .problems-grid {
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Bento Cards */
+    .glass-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 32px;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .glass-card:hover {
+      border-color: var(--border-hover);
+      background: rgba(255, 255, 255, 0.04);
+      transform: translateY(-4px);
+    }
+
+    .glass-card:hover::before {
+      opacity: 1;
+    }
+
+    .section {
+      padding: 100px 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .section-header h2 {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -1.5px;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: clamp(16px, 2vw, 18px);
+    }
+
+    .problem-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 30px;
-      margin-top: 60px;
+      gap: 24px;
     }
-    
+
     .problem-card {
-      background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 107, 107, 0.02));
-      border: 1px solid rgba(255, 107, 107, 0.2);
-      border-radius: 24px;
-      padding: 40px;
-      transition: all 0.4s;
-      position: relative;
-      overflow: hidden;
+      transition-delay: 0s;
     }
-    
-    .problem-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #ff6b6b, transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
+
+    .problem-card:nth-child(2) {
+      transition-delay: 0.1s;
     }
-    
-    .problem-card:hover {
-      transform: translateY(-10px);
-      border-color: rgba(255, 107, 107, 0.4);
+
+    .problem-card:nth-child(3) {
+      transition-delay: 0.2s;
     }
-    
-    .problem-card:hover::before {
-      opacity: 1;
-    }
-    
-    .problem-icon {
-      width: 60px;
-      height: 60px;
-      background: rgba(255, 107, 107, 0.2);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
-      font-size: 28px;
-    }
-    
+
     .problem-card h3 {
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 600;
       margin-bottom: 12px;
+      color: var(--text-main);
     }
-    
+
     .problem-card p {
       color: var(--text-muted);
-      line-height: 1.7;
+      font-size: 15px;
+      line-height: 1.6;
     }
-    
-    /* Features Section */
-    .features-section {
-      background: linear-gradient(180deg, transparent, rgba(80, 238, 222, 0.02), transparent);
+
+    /* Interactive Demo Section */
+    .demo-container {
+      max-width: 700px;
+      margin: 0 auto;
     }
-    
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 30px;
-      margin-top: 60px;
-    }
-    
-    .feature-card {
-      background: var(--surface);
-      border: 1px solid rgba(80, 238, 222, 0.1);
-      border-radius: 24px;
-      padding: 40px;
-      transition: all 0.4s;
-      position: relative;
+
+    .demo-window {
+      background: rgba(10, 10, 10, 0.9);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
       overflow: hidden;
+      box-shadow: 
+        0 40px 80px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(255,255,255,0.05),
+        inset 0 1px 0 rgba(255,255,255,0.05);
     }
-    
-    .feature-card::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(80, 238, 222, 0.1), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
+
+    .demo-header {
+      background: rgba(255, 255, 255, 0.02);
+      padding: 14px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 13px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
     }
-    
-    .feature-card:hover {
-      transform: translateY(-10px);
-      border-color: rgba(80, 238, 222, 0.3);
-      box-shadow: 0 20px 60px rgba(80, 238, 222, 0.1);
+
+    .demo-body {
+      padding: 28px;
     }
-    
-    .feature-card:hover::after {
-      opacity: 1;
+
+    .form-control {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 16px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 15px;
+      resize: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    
-    .feature-icon {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border-radius: 20px;
+
+    .form-control:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
+    }
+
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .demo-btn {
+      width: 100%;
+      padding: 14px 24px;
+      margin-top: 16px;
+      background: var(--text-main);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 24px;
-      font-size: 32px;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .feature-card h3 {
-      font-size: 22px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .feature-card p {
-      color: var(--text-muted);
-      line-height: 1.7;
-      position: relative;
-      z-index: 1;
-    }
-    
-    /* Demo Section */
-    .demo-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    .demo-container {
-      background: var(--surface);
-      border: 1px solid rgba(80, 238, 222, 0.2);
-      border-radius: 32px;
-      padding: 50px;
-      max-width: 900px;
-      width: 100%;
-      margin-top: 60px;
-      position: relative;
-    }
-    
-    .demo-container::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: 32px;
-      padding: 1px;
-      background: linear-gradient(135deg, var(--primary), transparent, var(--primary));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-    }
-    
-    .demo-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 30px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .demo-dots {
-      display: flex;
       gap: 8px;
     }
-    
-    .demo-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
+
+    .demo-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
     }
-    
-    .demo-dot:nth-child(1) { background: #ff5f57; }
-    .demo-dot:nth-child(2) { background: #febc2e; }
-    .demo-dot:nth-child(3) { background: #28c840; }
-    
-    .demo-title {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-left: auto;
+
+    .demo-btn:active {
+      transform: translateY(0);
     }
-    
-    .demo-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
+
+    .result-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 24px;
+      margin-top: 20px;
+      display: none;
     }
-    
-    .demo-input h4, .demo-output h4 {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
+
+    .result-box.active {
+      animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    
-    .demo-textarea {
-      width: 100%;
-      height: 150px;
-      background: var(--surface-light);
-      border: 1px solid rgba(80, 238, 222, 0.2);
-      border-radius: 16px;
-      padding: 16px;
-      color: var(--text);
-      font-size: 14px;
-      resize: none;
-      font-family: inherit;
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-    
-    .demo-textarea:focus {
-      outline: none;
-      border-color: var(--primary);
+
+    .result-item {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
-    
-    .demo-analyze-btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border: none;
-      border-radius: 12px;
-      color: var(--bg);
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 16px;
-      transition: all 0.3s;
-    }
-    
-    .demo-analyze-btn:hover {
-      box-shadow: 0 0 30px rgba(80, 238, 222, 0.4);
-    }
-    
-    .demo-output {
-      background: var(--surface-light);
-      border-radius: 16px;
-      padding: 20px;
-    }
-    
-    .demo-output-item {
-      margin-bottom: 16px;
-    }
-    
-    .demo-output-item:last-child {
+
+    .result-item:last-child {
       margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
     }
-    
-    .demo-label {
+
+    .result-label {
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--primary);
-      margin-bottom: 6px;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 600;
     }
-    
-    .demo-value {
+
+    .result-value {
+      font-weight: 400;
+      font-size: 15px;
+      color: #E2E8F0;
+      line-height: 1.6;
+    }
+
+    .follow-up-draft {
+      background: #000;
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      border-radius: 8px;
       font-size: 14px;
+      color: #94a3b8;
+      margin-top: 8px;
+      line-height: 1.7;
+      min-height: 100px;
+    }
+
+    .follow-up-draft::after {
+      content: '|';
+      animation: blink 0.8s step-end infinite;
+      color: var(--text-main);
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Features */
+    .features-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .feature-item {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .feature-item:hover .feature-icon {
+      transform: translateY(-4px) scale(1.05);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-item h4 {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .feature-item p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Screenshots */
+    .screenshots-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .screenshot-card {
+      padding: 0;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .screenshot-content {
+      padding: 48px 48px 32px;
+      text-align: center;
     }
     
+    .screenshot-content h3 {
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .screenshot-card > img {
+      width: 100%;
+      max-width: 800px;
+      display: block;
+      border: none;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* Second Row */
+    .features-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+    }
+
+    .feature-split-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .feature-split-card .screenshot-content {
+      padding: 40px;
+      text-align: left;
+    }
+
+    .feature-split-card > img {
+      width: 100%;
+      border-top: 1px solid var(--border-color);
+    }
+
     /* CTA Section */
     .cta-section {
       text-align: center;
-      padding: 120px 20px;
-      position: relative;
-      z-index: 10;
+      padding: 120px 0 160px;
     }
-    
-    .cta-box {
-      background: linear-gradient(135deg, rgba(80, 238, 222, 0.15), rgba(80, 238, 222, 0.05));
-      border: 1px solid rgba(80, 238, 222, 0.3);
-      border-radius: 40px;
-      padding: 80px 60px;
-      max-width: 800px;
-      margin: 0 auto;
-      position: relative;
-      overflow: hidden;
+
+    .cta-section h2 {
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+      background: linear-gradient(180deg, #FFFFFF 0%, #8A8F98 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    
-    .cta-box::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(80, 238, 222, 0.1), transparent 50%);
-      animation: rotate 20s linear infinite;
-    }
-    
-    @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    
-    .cta-box h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(32px, 4vw, 48px);
-      font-weight: 700;
-      margin-bottom: 20px;
-      position: relative;
-    }
-    
-    .cta-box p {
+
+    .cta-section p {
       font-size: 18px;
       color: var(--text-muted);
-      margin-bottom: 40px;
-      position: relative;
+      margin-bottom: 32px;
     }
-    
+
     /* Footer */
-    footer {
-      position: relative;
-      z-index: 10;
-      padding: 40px 60px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-    
-    .footer-links {
-      display: flex;
-      gap: 30px;
-    }
-    
-    .footer-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 14px;
-      transition: color 0.3s;
-    }
-    
-    .footer-links a:hover {
-      color: var(--primary);
-    }
-    
-    .footer-copy {
+    .footer {
+      border-top: 1px solid var(--border-color);
+      padding: 40px 0;
+      text-align: center;
       color: var(--text-muted);
       font-size: 14px;
     }
-    
-    /* Glow Effects */
-    .glow-primary {
-      filter: drop-shadow(0 0 20px rgba(80, 238, 222, 0.5));
-    }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-      nav {
-        padding: 15px 20px;
-      }
-      
-      .nav-links {
-        display: none;
-      }
-      
-      .section {
-        padding: 60px 20px;
-      }
-      
-      .demo-content {
-        grid-template-columns: 1fr;
-      }
-      
-      footer {
-        padding: 30px 20px;
-        flex-direction: column;
-        text-align: center;
-      }
-    }
-    
-    /* Scroll animations */
+
+    /* Reveal Animations */
     .reveal {
       opacity: 0;
-      transform: translateY(50px);
-      transition: all 0.8s ease-out;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    
+
     .reveal.active {
       opacity: 1;
       transform: translateY(0);
     }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal-scale.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Stagger Children */
+    .stagger-children .reveal {
+      transition-delay: calc(var(--i, 0) * 0.1s);
+    }
+
+    /* Smooth Image Reveal */
+    .image-reveal {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .image-reveal::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--bg-color);
+      transform-origin: left;
+      transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .image-reveal.active::after {
+      transform: translateX(100%);
+    }
+
+    /* Footer Reveal */
+    .footer {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .footer.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 100px 0 60px;
+      }
+
+      .section {
+        padding: 60px 0;
+      }
+
+      .screenshot-content {
+        padding: 32px 24px 24px;
+      }
+
+      .features-row {
+        grid-template-columns: 1fr;
+      }
+
+      .cursor, .cursor-dot {
+        display: none;
+      }
+    }
+
+    /* Magnetic Button Effect */
+    .magnetic {
+      position: relative;
+    }
+
+    .magnetic-btn {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
   </style>
 </head>
+
 <body>
-  <!-- Animated Background -->
-  <div class="bg-animation">
-    <div class="floating-card"></div>
-    <div class="floating-card"></div>
-    <div class="floating-card"></div>
-    <div class="floating-card"></div>
-    <div class="floating-card"></div>
-    <div class="floating-card"></div>
-  </div>
-  
-  <div class="particles" id="particles"></div>
-  
-  <!-- Navbar -->
-  <nav>
-    <div class="logo">
-      <div class="logo-icon">⚡</div>
-      <span class="logo-text">NextStep AI</span>
-    </div>
-    <div class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#how-it-works">How it Works</a>
-      <a href="#demo">Demo</a>
-    </div>
-    <button class="nav-cta">Get Early Access</button>
-  </nav>
-  
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-badge">Founder Beta v1.0</div>
-    <h1>You're not losing leads<br><span class="highlight">— you're losing follow-ups.</span></h1>
-    <p class="hero-subtitle">Stop letting deals slip through the cracks. NextStep automatically summarizes sales calls, identifies objections, and drafts the perfect follow-up email.</p>
-    <div class="hero-cta-group">
-      <a href="#demo" class="btn-primary">Get Early Access</a>
-      <a href="#demo" class="btn-secondary">
-        <span class="material-symbols-outlined">play_arrow</span>
-        See how it works
+  <!-- Custom Cursor -->
+  <div class="cursor"></div>
+  <div class="cursor-dot"></div>
+
+  <!-- Background Effects -->
+  <div class="background-grid"></div>
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+
+  <div class="container">
+    <!-- Navbar -->
+    <nav>
+      <div class="logo">NextStep<span>.ai</span></div>
+      <a href="https://nextstep-ej4j.onrender.com/" class="btn btn-secondary magnetic">
+        <span class="magnetic-btn">Log in</span>
       </a>
-    </div>
-  </section>
-  
-  <!-- Problem Section -->
-  <section class="section" id="how-it-works">
-    <div class="section-label">The Problem</div>
-    <h2 class="section-title reveal">The Leak in Your Pipeline</h2>
-    <p class="section-subtitle reveal">You talk to 15+ leads a week. Here's what usually happens.</p>
-    
-    <div class="problems-grid">
-      <div class="problem-card reveal">
-        <div class="problem-icon">🧠</div>
-        <h3>The Context Fades</h3>
-        <p>By Friday, you can't remember exactly what the person on Tuesday's call cared about most.</p>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero reveal">
+      <div class="badge">
+        Founder beta v1.0
       </div>
-      <div class="problem-card reveal">
-        <div class="problem-icon">⏰</div>
-        <h3>Delayed Follow-ups</h3>
-        <p>Writing personalized follow-ups takes time, so you push it to tomorrow. Tomorrow never comes.</p>
+      <h1>You're not losing leads<br>— you're losing follow-ups.</h1>
+      <p>Stop letting deals slip through the cracks. NextStep automatically summarizes sales calls, identifies objections, and drafts the perfect follow-up email.</p>
+      <div class="hero-ctas">
+        <a href="https://nextstep-ej4j.onrender.com/" class="btn btn-primary magnetic">
+          <span class="magnetic-btn">Get Early Access</span>
+        </a>
+        <a href="#demo" class="btn btn-secondary magnetic" style="gap: 8px;">
+          <span class="magnetic-btn">See how it works</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
       </div>
-      <div class="problem-card reveal">
-        <div class="problem-icon">📉</div>
-        <h3>Lost Momentum</h3>
-        <p>Generic check-ins get ignored. Slowly, highly qualified leads just disappear.</p>
+    </section>
+
+    <!-- PROBLEM -->
+    <section class="section">
+      <div class="section-header reveal">
+        <h2>The Leak in Your Pipeline</h2>
+        <p>You talk to 15+ leads a week. Here is what usually happens.</p>
       </div>
-    </div>
-  </section>
-  
-  <!-- Features Section -->
-  <section class="section features-section" id="features">
-    <div class="demo-section" style="width: 100%;">
-      <div class="section-label">Experience</div>
-      <h2 class="section-title reveal">Experience NextStep</h2>
-      <p class="section-subtitle reveal" style="text-align: center; margin: 0 auto 0;">Drop a rough summary of a call. We do the rest.</p>
-      
-      <div class="demo-container reveal">
-        <div class="demo-header">
-          <div class="demo-dots">
-            <div class="demo-dot"></div>
-            <div class="demo-dot"></div>
-            <div class="demo-dot"></div>
-          </div>
-          <span class="demo-title">app.nextstep.ai / analyze</span>
+      <div class="problem-grid stagger-children">
+        <div class="glass-card problem-card reveal">
+          <h3>The Context Fades</h3>
+          <p>By Friday, you can't remember exactly what the person on Tuesday's call cared about most.</p>
         </div>
-        
-        <div class="demo-content">
-          <div class="demo-input">
-            <h4>Input</h4>
-            <textarea class="demo-textarea" placeholder="Talked to Sarah. They love the product but her manager thinks pricing is too high right now. Will sync next week.">Talked to Sarah. They love the product but her manager thinks pricing is too high right now. Will sync next week.</textarea>
-            <button class="demo-analyze-btn">Analyze Conversation</button>
+        <div class="glass-card problem-card reveal">
+          <h3>Delayed Follow-ups</h3>
+          <p>Writing personalized follow-ups takes time, so you push it to tomorrow. Tomorrow never comes.</p>
+        </div>
+        <div class="glass-card problem-card reveal">
+          <h3>Lost Momentum</h3>
+          <p>Generic check-ins get ignored. Slowly, highly qualified leads just disappear.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE DEMO -->
+    <section id="demo" class="section">
+      <div class="section-header reveal">
+        <h2>Experience NextStep</h2>
+        <p>Drop a rough summary of a call. We do the rest.</p>
+      </div>
+
+      <div class="demo-container reveal-scale">
+        <div class="demo-window">
+          <div class="demo-header">
+            app.nextstep.ai / analyze
+          </div>
+          <div class="demo-body">
+            <div style="margin-bottom: 16px;">
+              <textarea id="demo-input" class="form-control" rows="3"
+                placeholder="e.g. Talked to Sarah. They love the product but her manager thinks pricing is too high right now. Will sync next week."></textarea>
+            </div>
+            <button id="demo-btn" class="demo-btn magnetic">
+              <span class="magnetic-btn">Analyze Conversation</span>
+              <span style="opacity: 0.5; margin-left: 8px; font-size: 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 4px; padding: 2px 6px;">↵</span>
+            </button>
+
+            <div id="demo-result" class="result-box">
+              <div class="result-item">
+                <div class="result-label">Deal Stage</div>
+                <div class="result-value">Evaluation <span style="color: #8A8F98;">› Objections</span></div>
+              </div>
+              <div class="result-item">
+                <div class="result-label">Key Concern</div>
+                <div class="result-value">Manager pushback on pricing & ROI justification.</div>
+              </div>
+              <div class="result-item">
+                <div class="result-label">Recommended Action</div>
+                <div class="result-value">Send a strong ROI/Case Study to share with the manager. Follow up next week.</div>
+              </div>
+              <div class="result-item">
+                <div class="result-label">Drafted Follow-up</div>
+                <div class="follow-up-draft" id="demo-typing"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section">
+      <div class="section-header reveal">
+        <h2>Your AI Sales Assistant</h2>
+        <p>Everything you need to close more deals, with zero admin work.</p>
+      </div>
+
+      <div class="screenshots-grid">
+        <div class="glass-card screenshot-card reveal-scale">
+          <div class="screenshot-content">
+            <h3>Instantly understand the deal</h3>
+            <p style="color: var(--text-muted); margin-top: 8px;">See how interested the lead is, what's blocking them, and exactly what you should do next.</p>
+            <div class="features-list">
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4>Auto-Summaries</h4>
+                  <p>Turns messy transcripts into clean insights.</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <circle cx="12" cy="12" r="6"/>
+                    <circle cx="12" cy="12" r="2"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4>Objection Parsing</h4>
+                  <p>Identifies hidden concerns automatically.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <img src="analysis.png" alt="Analysis Dashboard" onerror="this.style.display='none'">
+        </div>
+
+        <div class="features-row">
+          <div class="glass-card feature-split-card reveal">
+            <div class="screenshot-content">
+              <h3>Perfect memory</h3>
+              <p style="color: var(--text-muted); margin-top: 8px; font-size: 15px;">Every conversation is indexed and searchable. Never forget what was promised.</p>
+            </div>
+            <img src="history.png" alt="Conversation History" onerror="this.style.display='none'">
           </div>
           
-          <div class="demo-output">
-            <div class="demo-output-item">
-              <div class="demo-label">Deal Stage</div>
-              <div class="demo-value">Evaluation › Objections</div>
+          <div class="glass-card feature-split-card reveal">
+            <div class="screenshot-content">
+              <h3>Send perfect follow-ups</h3>
+              <p style="color: var(--text-muted); margin-top: 8px; font-size: 15px;">NextStep drafts a personalized follow-up that directly addresses their needs.</p>
             </div>
-            <div class="demo-output-item">
-              <div class="demo-label">Key Concern</div>
-              <div class="demo-value">Manager pushback on pricing & ROI justification.</div>
-            </div>
-            <div class="demo-output-item">
-              <div class="demo-label">Recommended Action</div>
-              <div class="demo-value">Send a strong ROI case study. Follow up next week.</div>
-            </div>
-            <div class="demo-output-item">
-              <div class="demo-label">Drafted Follow-up</div>
-              <div class="demo-value">Hi Sarah, Great speaking today. I've attached an ROI case study...</div>
-            </div>
+            <img src="followup.png" alt="Email Follow-up Draft" onerror="this.style.display='none'">
           </div>
         </div>
       </div>
-    </div>
-  </section>
-  
-  <!-- Features Grid -->
-  <section class="section">
-    <div class="section-label">Features</div>
-    <h2 class="section-title reveal">Your AI Sales Assistant</h2>
-    <p class="section-subtitle reveal">Everything you need to close more deals, with zero admin work.</p>
-    
-    <div class="features-grid">
-      <div class="feature-card reveal">
-        <div class="feature-icon">📊</div>
-        <h3>Instantly Understand the Deal</h3>
-        <p>See how interested the lead is, what's blocking them, and exactly what you should do next to move the deal forward.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon">📝</div>
-        <h3>Auto-Summaries</h3>
-        <p>Turns messy transcripts into clean, actionable insights in seconds.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon">🎯</div>
-        <h3>Objection Parsing</h3>
-        <p>Identifies hidden concerns automatically so you can address them proactively.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon">💾</div>
-        <h3>Perfect Memory</h3>
-        <p>Every conversation is indexed and searchable. Never forget what was promised.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon">📧</div>
-        <h3>Send Perfect Follow-ups</h3>
-        <p>NextStep drafts a personalized follow-up that directly addresses their needs.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon">📅</div>
-        <h3>Conversation History</h3>
-        <p>All your calls organized, searchable, and ready for your next conversation.</p>
-      </div>
-    </div>
-  </section>
-  
-  <!-- CTA Section -->
-  <section class="cta-section">
-    <div class="cta-box reveal">
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="cta-section reveal">
       <h2>Ready to stop losing deals?</h2>
       <p>Join founders and sales teams who are closing more deals with perfect follow-ups.</p>
-      <button class="btn-primary">Start Using NextStep</button>
-    </div>
-  </section>
-  
-  <!-- Footer -->
-  <footer>
-    <div class="logo">
-      <div class="logo-icon" style="width: 32px; height: 32px; font-size: 16px;">⚡</div>
-      <span class="logo-text" style="font-size: 18px;">NextStep AI</span>
-    </div>
-    <div class="footer-links">
-      <a href="#">Privacy</a>
-      <a href="#">Terms</a>
-      <a href="#">Contact</a>
-    </div>
-    <div class="footer-copy">© 2026 NextStep AI. All rights reserved.</div>
-  </footer>
-  
+      <a href="https://nextstep-ej4j.onrender.com/" class="btn btn-primary magnetic" style="padding: 14px 32px; font-size: 16px;">
+        <span class="magnetic-btn">Start Using NextStep</span>
+      </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>© 2026 NextStep AI.</p>
+    </footer>
+  </div>
+
   <script>
-    // Create particles
-    const particlesContainer = document.getElementById('particles');
-    for (let i = 0; i < 50; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.animationDelay = Math.random() * 15 + 's';
-      particle.style.animationDuration = (10 + Math.random() * 10) + 's';
-      particlesContainer.appendChild(particle);
+    // Custom Cursor
+    const cursor = document.querySelector('.cursor');
+    const cursorDot = document.querySelector('.cursor-dot');
+    let cursorX = 0, cursorY = 0;
+    let dotX = 0, dotY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      cursorX = e.clientX;
+      cursorY = e.clientY;
+    });
+
+    function animateCursor() {
+      dotX += (cursorX - dotX) * 0.5;
+      dotY += (cursorY - dotY) * 0.5;
+      
+      cursor.style.left = cursorX + 'px';
+      cursor.style.top = cursorY + 'px';
+      cursorDot.style.left = dotX + 'px';
+      cursorDot.style.top = dotY + 'px';
+      
+      requestAnimationFrame(animateCursor);
     }
-    
+    animateCursor();
+
+    // Cursor hover effect
+    document.querySelectorAll('a, button, .glass-card, .feature-item').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+
     // Scroll reveal animation
-    const reveals = document.querySelectorAll('.reveal');
-    
-    function reveal() {
-      reveals.forEach(el => {
-        const windowHeight = window.innerHeight;
-        const elementTop = el.getBoundingClientRect().top;
-        const revealPoint = 150;
-        
-        if (elementTop < windowHeight - revealPoint) {
-          el.classList.add('active');
+    const reveals = document.querySelectorAll('.reveal, .reveal-scale');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('active');
+          }, index * 50);
         }
       });
-    }
-    
-    window.addEventListener('scroll', reveal);
-    reveal();
-    
-    // Smooth scroll
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    reveals.forEach(reveal => observer.observe(reveal));
+
+    // Footer reveal
+    const footer = document.querySelector('.footer');
+    const footerObserver = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        footer.classList.add('active');
+      }
+    }, { threshold: 0.1 });
+    footerObserver.observe(footer);
+
+    // Image reveal animation
+    document.querySelectorAll('.image-reveal').forEach(img => {
+      const imgObserver = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          entries[0].target.classList.add('active');
+        }
+      }, { threshold: 0.3 });
+      imgObserver.observe(img);
+    });
+
+    // Stagger children
+    document.querySelectorAll('.stagger-children').forEach((parent, pi) => {
+      parent.querySelectorAll('.reveal').forEach((child, ci) => {
+        child.style.setProperty('--i', ci);
+      });
+    });
+
+    // Interactive Demo Logic
+    const demoBtn = document.getElementById('demo-btn');
+    const demoResult = document.getElementById('demo-result');
+    const demoTyping = document.getElementById('demo-typing');
+    const demoInput = document.getElementById('demo-input');
+
+    const sampleDraft = "Hi Sarah,\n\nGreat speaking today. I completely understand your manager's concern around pricing right now. I've attached a brief ROI case study showing how teams like yours save over 10 hours a week, which usually helps justify the cost to leadership.\n\nLet's sync next week as planned!";
+
+    demoBtn.addEventListener('click', () => {
+      if (!demoInput.value.trim()) {
+        demoInput.value = "Talked to Sarah. They love the product but her manager thinks pricing is too high right now. Will sync next week.";
+      }
+
+      demoBtn.innerHTML = '<span class="magnetic-btn">Analyzing...</span>';
+      demoBtn.disabled = true;
+      demoResult.classList.remove('active');
+      demoResult.style.display = 'none';
+      demoTyping.innerHTML = '';
+
+      setTimeout(() => {
+        demoBtn.innerHTML = '<span class="magnetic-btn">Analyze Conversation</span><span style="opacity: 0.5; margin-left: 8px; font-size: 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 4px; padding: 2px 6px;">↵</span>';
+        demoBtn.disabled = false;
+        demoResult.style.display = 'block';
+        demoResult.classList.add('active');
+
+        let i = 0;
+        function typeWriter() {
+          if (i < sampleDraft.length) {
+            let char = sampleDraft.charAt(i);
+            if (char === '\n') {
+              demoTyping.innerHTML += '<br>';
+            } else {
+              demoTyping.innerHTML += char;
+            }
+            i++;
+            setTimeout(typeWriter, 15);
+          }
+        }
+        setTimeout(typeWriter, 300);
+
+      }, 600);
+    });
+
+    // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
-    });
-    
-    // Navbar background on scroll
-    const nav = document.querySelector('nav');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 50) {
-        nav.style.background = 'rgba(10, 10, 15, 0.95)';
-      } else {
-        nav.style.background = 'rgba(10, 10, 15, 0.8)';
-      }
     });
   </script>
 </body>
