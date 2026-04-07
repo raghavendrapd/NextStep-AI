@@ -254,6 +254,61 @@
       background-clip: text;
       -webkit-text-fill-color: transparent;
       max-width: 900px;
+      overflow: hidden;
+    }
+
+    .hero h1 .line {
+      display: block;
+      overflow: hidden;
+    }
+
+    .hero h1 .word {
+      display: inline-block;
+      transform: translateY(100%);
+      opacity: 0;
+      animation: slideUpWord 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .hero h1 .line:nth-child(1) .word {
+      animation-delay: 0.2s;
+    }
+
+    .hero h1 .line:nth-child(2) .word {
+      animation-delay: 0.4s;
+    }
+
+    .hero h1 .highlight {
+      color: #50EEDE;
+      -webkit-text-fill-color: #50EEDE;
+      position: relative;
+    }
+
+    .hero h1 .highlight::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: rgba(80, 238, 222, 0.3);
+      border-radius: 4px;
+      z-index: -1;
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: highlightBar 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
+    }
+
+    @keyframes slideUpWord {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes highlightBar {
+      to {
+        transform: scaleX(1);
+      }
     }
 
     .hero p {
@@ -262,6 +317,21 @@
       max-width: 600px;
       margin: 0 auto 40px;
       line-height: 1.6;
+      overflow: hidden;
+    }
+
+    .hero p .char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInChar 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeInChar {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .hero-ctas {
@@ -307,6 +377,41 @@
       background: linear-gradient(135deg, rgba(255,255,255,0.03), transparent 50%);
       pointer-events: none;
       z-index: 1;
+    }
+
+    .hero-screenshot-img {
+      width: 100%;
+      display: block;
+    }
+
+    .screenshot-placeholder {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .screenshot-placeholder p {
+      margin-top: 16px;
+      font-size: 14px;
+    }
+
+    .screenshot-placeholder span {
+      margin-top: 8px;
+      font-size: 12px;
+      opacity: 0.5;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .browser-mockup.show-placeholder .screenshot-placeholder {
+      display: flex;
+    }
+
+    .browser-mockup.show-placeholder .browser-toolbar {
+      border-bottom: none;
     }
 
     .browser-toolbar {
@@ -855,6 +960,7 @@
       width: 100%;
       max-width: 800px;
       display: block;
+      margin: 0 auto;
       border: none;
       border-top: 1px solid var(--border-color);
     }
@@ -1045,12 +1151,15 @@
     </nav>
 
     <!-- HERO -->
-    <section class="hero reveal">
+    <section class="hero">
       <div class="badge">
         Founder beta v1.0
       </div>
-      <h1>You're not losing leads<br>— you're losing follow-ups.</h1>
-      <p>Stop letting deals slip through the cracks. NextStep automatically summarizes sales calls, identifies objections, and drafts the perfect follow-up email.</p>
+      <h1>
+        <span class="line"><span class="word">You're</span> <span class="word">not</span> <span class="word">losing</span> <span class="word">leads</span></span>
+        <span class="line"><span class="word">—</span> <span class="word highlight">you're</span> <span class="word highlight">losing</span> <span class="word highlight">follow-ups.</span></span>
+      </h1>
+      <p id="hero-subtitle">Stop letting deals slip through the cracks. NextStep automatically summarizes sales calls, identifies objections, and drafts the perfect follow-up email.</p>
       <div class="hero-ctas">
         <a href="https://nextstep-ej4j.onrender.com/" class="btn btn-primary magnetic">
           <span class="magnetic-btn">Get Early Access</span>
@@ -1063,7 +1172,8 @@
         </a>
       </div>
 
-      <!-- Hero Screenshot Mockup -->
+      <!-- Hero Screenshot -->
+      <!-- REPLACE "hero-screenshot.png" WITH YOUR ACTUAL APP SCREENSHOT -->
       <div class="hero-screenshot">
         <div class="browser-mockup">
           <!-- Floating Badges -->
@@ -1096,62 +1206,18 @@
               <div class="browser-dot yellow"></div>
               <div class="browser-dot green"></div>
             </div>
-            <div class="browser-url">app.nextstep.ai/call/abc123</div>
+            <div class="browser-url">app.nextstep.ai</div>
           </div>
-          <div class="browser-content">
-            <div class="browser-sidebar">
-              <div class="sidebar-item active">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                </svg>
-                Call Analysis
-              </div>
-              <div class="sidebar-item">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                  <polyline points="22,6 12,13 2,6"/>
-                </svg>
-                Draft Email
-              </div>
-              <div class="sidebar-item">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                History
-              </div>
-            </div>
-            <div class="browser-main">
-              <div class="mockup-header">
-                <span class="mockup-title">Call with Sarah Chen</span>
-                <span class="mockup-badge">AI Analyzed</span>
-              </div>
-              <div class="mockup-card">
-                <div class="mockup-card-header">
-                  <span class="mockup-card-title">Summary</span>
-                  <span class="mockup-card-badge">Pricing Objection</span>
-                </div>
-                <div class="mockup-text">
-                  Sarah is <strong>interested</strong> but needs buy-in from her VP. Main concern is <strong>budget justification</strong>. Decision expected <strong>next week</strong>. Needs ROI data to present to leadership.
-                </div>
-              </div>
-              <div class="mockup-card">
-                <div class="mockup-card-header">
-                  <span class="mockup-card-title">Follow-up Draft</span>
-                </div>
-                <div class="mockup-email">
-                  Hi Sarah,<br><br>
-                  Great meeting today! As discussed, here's the ROI case study showing how similar teams saved 15+ hours/week...<br><br>
-                  <em style="opacity: 0.5">(tap to edit)</em>
-                </div>
-                <div class="mockup-btn">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="22" y1="2" x2="11" y2="13"/>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                  </svg>
-                  Send to Sarah
-                </div>
-              </div>
-            </div>
+          <!-- Replace this img with your actual screenshot -->
+          <img src="hero-screenshot.png" alt="NextStep App" class="hero-screenshot-img" onerror="this.parentElement.classList.add('show-placeholder')">
+          <div class="screenshot-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            <p>Add your screenshot here</p>
+            <span>hero-screenshot.png</span>
           </div>
         </div>
       </div>
@@ -1331,6 +1397,28 @@
       el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
       el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
     });
+
+    // Hero subtitle typewriter animation
+    const heroSubtitle = document.getElementById('hero-subtitle');
+    const subtitleText = heroSubtitle.textContent;
+    heroSubtitle.innerHTML = '';
+    heroSubtitle.style.opacity = '1';
+
+    let charIndex = 0;
+    setTimeout(() => {
+      function typeSubtitle() {
+        if (charIndex < subtitleText.length) {
+          const span = document.createElement('span');
+          span.className = 'char';
+          span.textContent = subtitleText[charIndex];
+          span.style.animationDelay = (charIndex * 0.02) + 's';
+          heroSubtitle.appendChild(span);
+          charIndex++;
+          setTimeout(typeSubtitle, 20);
+        }
+      }
+      typeSubtitle();
+    }, 1000);
 
     // Scroll reveal animation
     const reveals = document.querySelectorAll('.reveal, .reveal-scale');
